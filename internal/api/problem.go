@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/studio-ch/xcloud-cli/internal/exitcode"
+	"github.com/studio-ch/cloudconsole-cli/internal/exitcode"
 )
 
 // Problem is a decoded RFC 9457 problem-details response, plus the
@@ -24,7 +24,7 @@ import (
 //   - A 412 from the quota service uses
 //     type=https://studio-cp.dev/errors/quota-exceeded and carries a
 //     `quota` member with the numbers. Rendering "Precondition Failed"
-//     when we could render "you are using 25 of 25 xcloud instances" is
+//     when we could render "you are using 25 of 25 cloudconsole instances" is
 //     a wasted opportunity.
 //   - A 403 from the per-tenant service kill switch carries both `code`
 //     and `service`, so we can name which service is disabled.

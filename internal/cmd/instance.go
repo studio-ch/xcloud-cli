@@ -9,9 +9,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/studio-ch/xcloud-cli/internal/api"
-	"github.com/studio-ch/xcloud-cli/internal/output"
-	"github.com/studio-ch/xcloud-cli/internal/wait"
+	"github.com/studio-ch/cloudconsole-cli/internal/api"
+	"github.com/studio-ch/cloudconsole-cli/internal/output"
+	"github.com/studio-ch/cloudconsole-cli/internal/wait"
 )
 
 // instanceColumns is the table view. Deliberately narrow: an 80-column
@@ -161,12 +161,12 @@ func newInstanceCreateCommand(s *State) *cobra.Command {
 		Use:   "create",
 		Short: "Create an Xcloud instance",
 		Long: "Create an Xcloud instance.\n\n" +
-			"--region accepts a slug ('xcloud region list' shows the ones available to\n" +
+			"--region accepts a slug ('cloudconsole region list' shows the ones available to\n" +
 			"you) and is resolved to an id for you.\n\n" +
 			"Creates are deduplicated: the CLI sends an idempotency key, so repeating\n" +
 			"an interrupted create with the same --idempotency-key replays the original\n" +
 			"result instead of provisioning a second instance. Keys expire after 24h.",
-		Example: "  xcloud instance create --name build-01 --region ZRH1 \\\n" +
+		Example: "  cloudconsole instance create --name build-01 --region ZRH1 \\\n" +
 			"      --image ghcr.io/example/macos-sequoia:latest \\\n" +
 			"      --cpu 10 --memory 28 --disk 480 --wait",
 		Args: cobra.NoArgs,
@@ -378,7 +378,7 @@ func newInstanceLifecycleCommands(s *State) []*cobra.Command {
 			use: "suspend <id>", action: "suspend", verb: "suspending",
 			short: "Suspend an instance to disk",
 			long: "Saves the guest's memory to disk and stops the VM, so it consumes no CPU\n" +
-				"or RAM. Resume it with 'xcloud instance start'.",
+				"or RAM. Resume it with 'cloudconsole instance start'.",
 			predicate: wait.InstanceSuspended(),
 		},
 	}

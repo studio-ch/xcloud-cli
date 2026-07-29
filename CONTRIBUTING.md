@@ -1,17 +1,17 @@
 # Contributing
 
-Developer notes for the `xcloud` CLI. User-facing documentation is in
+Developer notes for the `cloudconsole` CLI. User-facing documentation is in
 [README.md](./README.md).
 
 **The source of truth is the Cloud Console monorepo**, at
-`apps/xcloud-cli`. The public `studio-ch/xcloud-cli` repository is a
+`apps/cloudconsole-cli`. The public `studio-ch/cloudconsole-cli` repository is a
 mirror, published on each release — send changes to the monorepo, not to
 the mirror, or they will be overwritten.
 
 ## Build and test
 
 ```bash
-make build        # -> dist/xcloud
+make build        # -> dist/cloudconsole
 make test         # go test ./... -race
 make lint         # gofmt + go vet
 ```
@@ -74,7 +74,7 @@ in `internal/api`:
 
 | Package | Responsibility |
 |---|---|
-| `cmd/xcloud` | `main`; signal handling and the single `os.Exit` call |
+| `cmd/cloudconsole` | `main`; signal handling and the single `os.Exit` call |
 | `internal/cmd` | Cobra command tree, one file per domain |
 | `internal/config` | Profiles, XDG paths, 0600 enforcement, precedence |
 | `internal/api` | Transport: auth, retries, RFC 9457 errors, tracing |
@@ -103,8 +103,8 @@ in `internal/api`:
 ## Testing against a real deployment
 
 ```bash
-export XCLOUD_API_URL=https://api.cloud.cloudbit.ch   # stage
-export XCLOUD_API_TOKEN=sk_live_...                   # read-only key
-./dist/xcloud auth status
-./dist/xcloud version
+export CLOUDCONSOLE_API_URL=https://api.cloud.cloudbit.ch   # stage
+export CLOUDCONSOLE_API_TOKEN=sk_live_...                   # read-only key
+./dist/cloudconsole auth status
+./dist/cloudconsole version
 ```

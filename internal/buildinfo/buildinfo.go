@@ -2,7 +2,7 @@
 // time. GoReleaser sets these via -ldflags -X; a plain `go build` or
 // `go run` leaves them empty, in which case we fall back to the module
 // metadata the toolchain embeds automatically. That fallback matters:
-// a developer running `go run ./cmd/xcloud version` should see
+// a developer running `go run ./cmd/cloudconsole version` should see
 // something truthful rather than a bare "dev".
 package buildinfo
 
@@ -67,14 +67,14 @@ func fallback(v string) string {
 // slice adoption by client version.
 func UserAgent() string {
 	version, _, _ := Resolve()
-	return fmt.Sprintf("xcloud-cli/%s (%s/%s; %s)",
+	return fmt.Sprintf("cloudconsole-cli/%s (%s/%s; %s)",
 		version, runtime.GOOS, runtime.GOARCH, runtime.Version())
 }
 
-// String renders the human-facing one-liner for `xcloud version`.
+// String renders the human-facing one-liner for `cloudconsole version`.
 func String() string {
 	version, commit, date := Resolve()
-	s := "xcloud " + version
+	s := "cloudconsole " + version
 	if commit != "" {
 		s += " (commit " + shortCommit(commit)
 		if date != "" {

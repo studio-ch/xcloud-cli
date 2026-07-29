@@ -17,7 +17,7 @@ import (
 func NewIdempotencyKey() string {
 	var b [16]byte
 	if _, err := rand.Read(b[:]); err != nil {
-		return fmt.Sprintf("xcloud-cli-%d", time.Now().UnixNano())
+		return fmt.Sprintf("cloudconsole-cli-%d", time.Now().UnixNano())
 	}
 	return hex.EncodeToString(b[:])
 }

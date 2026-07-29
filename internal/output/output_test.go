@@ -231,7 +231,7 @@ func TestAge(t *testing.T) {
 func TestNoColorHonoursConventions(t *testing.T) {
 	t.Run("NO_COLOR wins over a TTY", func(t *testing.T) {
 		t.Setenv("NO_COLOR", "1")
-		t.Setenv("XCLOUD_COLOR", "")
+		t.Setenv("CLOUDCONSOLE_COLOR", "")
 		t.Setenv("CI", "")
 		if !NoColor(false, true) {
 			t.Error("NO_COLOR should suppress colour even on a TTY")
@@ -239,7 +239,7 @@ func TestNoColorHonoursConventions(t *testing.T) {
 	})
 	t.Run("CI suppresses colour", func(t *testing.T) {
 		t.Setenv("NO_COLOR", "")
-		t.Setenv("XCLOUD_COLOR", "")
+		t.Setenv("CLOUDCONSOLE_COLOR", "")
 		t.Setenv("CI", "true")
 		if !NoColor(false, true) {
 			t.Error("CI should suppress colour")
@@ -248,14 +248,14 @@ func TestNoColorHonoursConventions(t *testing.T) {
 	t.Run("explicit always beats CI", func(t *testing.T) {
 		t.Setenv("NO_COLOR", "")
 		t.Setenv("CI", "true")
-		t.Setenv("XCLOUD_COLOR", "always")
+		t.Setenv("CLOUDCONSOLE_COLOR", "always")
 		if NoColor(false, true) {
-			t.Error("XCLOUD_COLOR=always should force colour on")
+			t.Error("CLOUDCONSOLE_COLOR=always should force colour on")
 		}
 	})
 	t.Run("non-tty suppresses colour", func(t *testing.T) {
 		t.Setenv("NO_COLOR", "")
-		t.Setenv("XCLOUD_COLOR", "")
+		t.Setenv("CLOUDCONSOLE_COLOR", "")
 		t.Setenv("CI", "")
 		t.Setenv("TERM", "xterm")
 		if !NoColor(false, false) {

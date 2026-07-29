@@ -2,8 +2,8 @@
 //
 // Layout convention: one file per domain. Every command obtains its
 // dependencies from the shared *State, which resolves configuration and
-// constructs the API client lazily — so `xcloud version` and
-// `xcloud completion` work on a machine that has never been configured.
+// constructs the API client lazily — so `cloudconsole version` and
+// `cloudconsole completion` work on a machine that has never been configured.
 package cmd
 
 import (
@@ -17,10 +17,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/studio-ch/xcloud-cli/internal/api"
-	"github.com/studio-ch/xcloud-cli/internal/config"
-	"github.com/studio-ch/xcloud-cli/internal/exitcode"
-	"github.com/studio-ch/xcloud-cli/internal/output"
+	"github.com/studio-ch/cloudconsole-cli/internal/api"
+	"github.com/studio-ch/cloudconsole-cli/internal/config"
+	"github.com/studio-ch/cloudconsole-cli/internal/exitcode"
+	"github.com/studio-ch/cloudconsole-cli/internal/output"
 )
 
 // State is the per-invocation context shared by every command.
@@ -130,12 +130,12 @@ func (s *State) Client() (*api.Client, error) {
 	if r.Token == "" {
 		return nil, &configError{fmt.Errorf(
 			"no API token configured for profile %q.\n"+
-				"Run 'xcloud auth login' to store one, or set XCLOUD_API_TOKEN.\n"+
+				"Run 'cloudconsole auth login' to store one, or set CLOUDCONSOLE_API_TOKEN.\n"+
 				"Issue a key in the panel under Settings → API keys.", r.ProfileName)}
 	}
 
 	var tracer *api.Tracer
-	if s.debug || os.Getenv("XCLOUD_DEBUG") == "1" {
+	if s.debug || os.Getenv("CLOUDCONSOLE_DEBUG") == "1" {
 		tracer = api.NewTracer(os.Stderr, r.Token)
 	}
 
@@ -144,7 +144,7 @@ func (s *State) Client() (*api.Client, error) {
 		Token:         r.Token,
 		Timeout:       s.timeout,
 		Tracer:        tracer,
-		AllowInsecure: os.Getenv("XCLOUD_ALLOW_INSECURE") == "1",
+		AllowInsecure: os.Getenv("CLOUDCONSOLE_ALLOW_INSECURE") == "1",
 	})
 	if err != nil {
 		return nil, &configError{err}
@@ -198,24 +198,24 @@ func Execute(ctx context.Context) exitcode.Code {
 
 func newRootCommand(s *State) *cobra.Command {
 	root := &cobra.Command{
-		Use:   "xcloud",
+		Use:   "cloudconsole",
 		Short: "Command-line interface for the Cloud Console",
-		Long: "xcloud manages Cloud Console resources from the terminal and from CI.\n\n" +
-			"Authenticate once with 'xcloud auth login' using an API key issued in the\n" +
-			"panel under Settings → API keys, or set XCLOUD_API_TOKEN in a CI job.\n\n" +
+		Long: "cloudconsole manages Cloud Console resources from the terminal and from CI.\n\n" +
+			"Authenticate once with 'cloudconsole auth login' using an API key issued in the\n" +
+			"panel under Settings → API keys, or set CLOUDCONSOLE_API_TOKEN in a CI job.\n\n" +
 			"An API key is bound to a single organisation, so working with several\n" +
-			"organisations means several profiles (see 'xcloud config --help').",
+			"organisations means several profiles (see 'cloudconsole config --help').",
 		SilenceUsage:  true, // usage on a runtime error is noise
 		SilenceErrors: true, // we render errors ourselves, in report()
 		// A root command with subcommands but no Run falls back to
 		// printing help and exiting 0 — including for a mistyped
-		// subcommand. That silently turns `xcloud instnce list` into a
+		// subcommand. That silently turns `cloudconsole instnce list` into a
 		// success, which is exactly the kind of thing a CI pipeline
 		// should fail on. Handle both cases explicitly instead.
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) > 0 {
 				return &usageError{fmt.Errorf(
-					"unknown command %q — run 'xcloud --help' to see the available commands", args[0])}
+					"unknown command %q — run 'cloudconsole --help' to see the available commands", args[0])}
 			}
 			return cmd.Help()
 		},
@@ -224,7 +224,7 @@ func newRootCommand(s *State) *cobra.Command {
 	f := root.PersistentFlags()
 	f.StringVar(&s.profile, "profile", "", "configuration profile to use")
 	f.StringVar(&s.apiURL, "api-url", "", "API origin (default https://api.cloud.flow.swiss)")
-	f.StringVar(&s.token, "token", "", "API token (prefer XCLOUD_API_TOKEN; a flag is visible in ps)")
+	f.StringVar(&s.token, "token", "", "API token (prefer CLOUDCONSOLE_API_TOKEN; a flag is visible in ps)")
 	f.StringVarP(&s.outputFlag, "output", "o", "", "output format: table, wide, json, yaml")
 	f.BoolVar(&s.noColor, "no-color", false, "disable coloured output")
 	f.BoolVarP(&s.quiet, "quiet", "q", false, "print only identifying values")
@@ -269,7 +269,7 @@ func newExitCodesCommand() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			out := cmd.OutOrStdout()
-			fmt.Fprintln(out, "xcloud exit codes (stable since v0.1.0):")
+			fmt.Fprintln(out, "cloudconsole exit codes (stable since v0.1.0):")
 			fmt.Fprintln(out)
 			for _, c := range exitcode.All {
 				fmt.Fprintf(out, "  %3d  %s\n", c.Int(), c.Description())

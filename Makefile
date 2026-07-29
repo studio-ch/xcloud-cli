@@ -1,10 +1,10 @@
-BINARY := xcloud
+BINARY := cloudconsole
 DIST   := dist
-PKG    := github.com/studio-ch/xcloud-cli
+PKG    := github.com/studio-ch/cloudconsole-cli
 
 .PHONY: build
 build:
-	CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o $(DIST)/$(BINARY) ./cmd/xcloud
+	CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o $(DIST)/$(BINARY) ./cmd/cloudconsole
 
 .PHONY: test
 test:
@@ -27,7 +27,7 @@ lint:
 # and needs no database and no running server.
 .PHONY: spec
 spec:
-	cd ../.. && pnpm --silent --filter @studio-cp/api openapi:dump > apps/xcloud-cli/api/openapi-3.0.json
+	cd ../.. && pnpm --silent --filter @studio-cp/api openapi:dump > apps/cloudconsole-cli/api/openapi-3.0.json
 
 # Regenerate the API client from the committed snapshot. oapi-codegen is
 # pinned via the tool directive in go.mod, so this needs no global install.
@@ -43,7 +43,7 @@ check-generate: spec generate
 	@git diff --exit-code -- api/openapi-3.0.json internal/api/gen || { \
 		echo ""; \
 		echo "The committed API client is out of date."; \
-		echo "Run:  make -C apps/xcloud-cli spec generate"; \
+		echo "Run:  make -C apps/cloudconsole-cli spec generate"; \
 		echo "and commit the result."; \
 		exit 1; \
 	}

@@ -10,8 +10,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/studio-ch/xcloud-cli/internal/api"
-	"github.com/studio-ch/xcloud-cli/internal/wait"
+	"github.com/studio-ch/cloudconsole-cli/internal/api"
+	"github.com/studio-ch/cloudconsole-cli/internal/wait"
 )
 
 // waitFlags are the --wait knobs shared by every asynchronous command.
@@ -71,7 +71,7 @@ func deref(s *string) string {
 // awaitInstance runs a wait with a stderr progress line.
 //
 // Progress goes to stderr unconditionally, so
-// `xcloud instance create --wait -o json | jq` stays valid — the spinner
+// `cloudconsole instance create --wait -o json | jq` stays valid — the spinner
 // must never end up in the payload.
 func awaitInstance(cmd *cobra.Command, s *State, id string, predicate wait.Predicate, flags waitFlags, verb string) error {
 	client, err := s.Client()

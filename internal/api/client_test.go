@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/studio-ch/xcloud-cli/internal/exitcode"
+	"github.com/studio-ch/cloudconsole-cli/internal/exitcode"
 )
 
 // Assembled from fragments rather than written as one literal. The value
@@ -31,8 +31,8 @@ func TestDoSendsRequiredHeaders(t *testing.T) {
 	if got := req.Header.Get("Authorization"); got != "Bearer "+testToken {
 		t.Errorf("Authorization = %q", got)
 	}
-	if got := req.Header.Get("User-Agent"); !strings.HasPrefix(got, "xcloud-cli/") {
-		t.Errorf("User-Agent = %q, want an xcloud-cli/... prefix", got)
+	if got := req.Header.Get("User-Agent"); !strings.HasPrefix(got, "cloudconsole-cli/") {
+		t.Errorf("User-Agent = %q, want an cloudconsole-cli/... prefix", got)
 	}
 	if got := req.Header.Get("x-request-id"); len(got) != 32 {
 		t.Errorf("x-request-id = %q, want a 32-char client-generated id", got)

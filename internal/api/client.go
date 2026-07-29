@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/studio-ch/xcloud-cli/internal/buildinfo"
+	"github.com/studio-ch/cloudconsole-cli/internal/buildinfo"
 )
 
 // Client is the CLI's HTTP client against the Cloud Console API.
@@ -65,7 +65,7 @@ func New(o Options) (*Client, error) {
 	if u.Scheme == "http" && !o.AllowInsecure && !isLoopback(u.Hostname()) {
 		return nil, fmt.Errorf(
 			"refusing to send an API key over plaintext http:// to %s — "+
-				"use https://, or set XCLOUD_ALLOW_INSECURE=1 if you really mean it",
+				"use https://, or set CLOUDCONSOLE_ALLOW_INSECURE=1 if you really mean it",
 			u.Host)
 	}
 
@@ -103,7 +103,7 @@ func (c *Client) Origin() string { return c.origin }
 // Body is retained verbatim. That is deliberate and load-bearing: the
 // CLI's `--output json` contract is to emit the server's payload
 // unchanged, so that every jq recipe transfers 1:1 between curl and
-// xcloud. Decoding into a Go struct and re-encoding would silently drop
+// cloudconsole. Decoding into a Go struct and re-encoding would silently drop
 // any field the committed spec snapshot does not yet model.
 type Response struct {
 	Status    int
@@ -314,7 +314,7 @@ func firstNonEmpty(vals ...string) string {
 func newRequestID() string {
 	var b [16]byte
 	if _, err := rand.Read(b[:]); err != nil {
-		return fmt.Sprintf("xcloud-cli-%d", time.Now().UnixNano())
+		return fmt.Sprintf("cloudconsole-cli-%d", time.Now().UnixNano())
 	}
 	return hex.EncodeToString(b[:])
 }

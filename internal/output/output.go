@@ -7,7 +7,7 @@
 //
 // The reason is a contract one, not a convenience one. The OpenAPI
 // document stays the single source of truth, every jq recipe transfers
-// 1:1 between curl and xcloud, and the API's additive-only guarantee
+// 1:1 between curl and cloudconsole, and the API's additive-only guarantee
 // (docs/public-api.md §1) is inherited for free. A CLI-owned JSON shape
 // would be a SECOND public schema with its own 90-day deprecation cycle
 // — two contracts to maintain for one API.
@@ -54,7 +54,7 @@ func ParseFormat(s string) (Format, error) {
 
 // IsStructured reports whether the format is machine-oriented. Progress
 // output and human hints are suppressed for these on stdout — they go to
-// stderr instead, so `xcloud … -o json | jq` is never corrupted.
+// stderr instead, so `cloudconsole … -o json | jq` is never corrupted.
 func (f Format) IsStructured() bool {
 	return f == FormatJSON || f == FormatYAML
 }
@@ -180,7 +180,7 @@ func NoColor(explicitNoColor bool, isTTY bool) bool {
 	if os.Getenv("NO_COLOR") != "" {
 		return true
 	}
-	switch strings.ToLower(os.Getenv("XCLOUD_COLOR")) {
+	switch strings.ToLower(os.Getenv("CLOUDCONSOLE_COLOR")) {
 	case "never":
 		return true
 	case "always":

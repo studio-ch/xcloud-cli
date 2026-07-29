@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/studio-ch/xcloud-cli/internal/config"
+	"github.com/studio-ch/cloudconsole-cli/internal/config"
 )
 
 // Tracer writes redacted HTTP traces for --debug.

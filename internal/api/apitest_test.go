@@ -102,7 +102,7 @@ const (
 	// apps/api/src/middleware/scope.ts
 	bodyReadOnlyScope = `{"type":"about:blank","title":"Forbidden","status":403,"detail":"API key is read-only; this endpoint requires the write:resources scope."}`
 	// apps/api/src/middleware/require-service.ts
-	bodyServiceDisabled = `{"type":"about:blank","title":"Forbidden","status":403,"detail":"The xcloud service is not enabled for this tenant.","code":"service_disabled","service":"xcloud"}`
+	bodyServiceDisabled = `{"type":"about:blank","title":"Forbidden","status":403,"detail":"The cloudconsole service is not enabled for this tenant.","code":"service_disabled","service":"xcloud"}`
 	// apps/api/src/services/quotas.ts (quotaErrorToProblem)
 	bodyQuotaExceeded = `{"type":"https://studio-cp.dev/errors/quota-exceeded","title":"Quota Exceeded","status":412,"detail":"Quota xcloud_instances_total exceeded.","quota":{"key":"xcloud_instances_total","limit":25,"usage":25,"requested":1}}`
 	// apps/api/src/middleware/auth.ts

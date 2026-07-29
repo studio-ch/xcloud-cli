@@ -8,8 +8,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/studio-ch/xcloud-cli/internal/api"
-	"github.com/studio-ch/xcloud-cli/internal/output"
+	"github.com/studio-ch/cloudconsole-cli/internal/api"
+	"github.com/studio-ch/cloudconsole-cli/internal/output"
 )
 
 func newImageCommand(s *State) *cobra.Command {
@@ -77,7 +77,7 @@ func newImageRegisterCommand(s *State) *cobra.Command {
 	c := &cobra.Command{
 		Use:   "register",
 		Short: "Register an OCI image in your organisation's catalog",
-		Example: "  xcloud image register --name macos-sequoia --region ZRH1 \\\n" +
+		Example: "  cloudconsole image register --name macos-sequoia --region ZRH1 \\\n" +
 			"      --reference ghcr.io/example/macos-sequoia:latest --platform macos",
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
@@ -319,7 +319,7 @@ func newSecurityGroupCommand(s *State) *cobra.Command {
 		Aliases: []string{"security-groups", "sg"},
 		Short:   "Manage Xcloud security groups",
 		Long: "Security groups are per-region firewall rule sets. Attach them to an\n" +
-			"instance with 'xcloud instance security-group set'.\n\n" +
+			"instance with 'cloudconsole instance security-group set'.\n\n" +
 			"Note that updating a group REPLACES its entire rule set — the API has no\n" +
 			"add-one-rule operation, so read the group first if you mean to extend it.",
 	}

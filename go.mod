@@ -1,4 +1,4 @@
-module github.com/studio-ch/xcloud-cli
+module github.com/studio-ch/cloudconsole-cli
 
 go 1.25.0
 

@@ -25,19 +25,19 @@ manual installs.
 bash:
   # once, if bash-completion is not installed:
   #   Linux: sudo apt install bash-completion   macOS: brew install bash-completion
-  xcloud completion bash > /etc/bash_completion.d/xcloud          # system-wide
-  xcloud completion bash > ~/.local/share/bash-completion/completions/xcloud
+  cloudconsole completion bash > /etc/bash_completion.d/cloudconsole          # system-wide
+  cloudconsole completion bash > ~/.local/share/bash-completion/completions/cloudconsole
 
 zsh:
   # if completion is not yet enabled, add to ~/.zshrc:  autoload -U compinit; compinit
-  xcloud completion zsh > "${fpath[1]}/_xcloud"
+  cloudconsole completion zsh > "${fpath[1]}/_cloudconsole"
   # then restart the shell
 
 fish:
-  xcloud completion fish > ~/.config/fish/completions/xcloud.fish
+  cloudconsole completion fish > ~/.config/fish/completions/cloudconsole.fish
 
 powershell:
-  xcloud completion powershell | Out-String | Invoke-Expression
+  cloudconsole completion powershell | Out-String | Invoke-Expression
   # to persist, append that line to $PROFILE
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {

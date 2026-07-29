@@ -11,8 +11,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/studio-ch/xcloud-cli/internal/api"
-	"github.com/studio-ch/xcloud-cli/internal/output"
+	"github.com/studio-ch/cloudconsole-cli/internal/api"
+	"github.com/studio-ch/cloudconsole-cli/internal/output"
 )
 
 // simpleGet is the shape most read-only commands take: one GET, render
@@ -160,7 +160,7 @@ func newAPIKeyCommand(s *State) *cobra.Command {
 		Short:   "List the API keys of your organisation",
 		Long: "Lists API keys. Creating and revoking keys requires a signed-in user and\n" +
 			"is done in the panel under Settings → API keys.\n\n" +
-			"'xcloud auth status' identifies which of these keys the CLI is using.",
+			"'cloudconsole auth status' identifies which of these keys the CLI is using.",
 	}
 	c.AddCommand(&cobra.Command{
 		Use: "list", Aliases: []string{"ls"},
@@ -207,7 +207,7 @@ func newSSHKeyCommand(s *State) *cobra.Command {
 		Aliases: []string{"ssh-keys"},
 		Short:   "Manage SSH public keys",
 		Long: "SSH public keys are provisioned into instances when they are created,\n" +
-			"via 'xcloud instance create --ssh-key <id>'.",
+			"via 'cloudconsole instance create --ssh-key <id>'.",
 	}
 	c.AddCommand(
 		&cobra.Command{
@@ -244,7 +244,7 @@ func newSSHKeyCreateCommand(s *State) *cobra.Command {
 		Long: "Add an SSH public key.\n\n" +
 			"Reading the key from a file is the usual path — pasting a key on the command\n" +
 			"line works but puts it in your shell history.",
-		Example: "  xcloud ssh-key create --name laptop --public-key-file ~/.ssh/id_ed25519.pub",
+		Example: "  cloudconsole ssh-key create --name laptop --public-key-file ~/.ssh/id_ed25519.pub",
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			if (keyFile == "") == (keyBody == "") {

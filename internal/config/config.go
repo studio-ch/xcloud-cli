@@ -6,7 +6,7 @@
 // The standard CI shape is a committed profile that carries api_url plus
 // a token injected from the runner's secret store:
 //
-//	XCLOUD_API_TOKEN=$SECRET xcloud --profile stage instance list
+//	CLOUDCONSOLE_API_TOKEN=$SECRET cloudconsole --profile stage instance list
 //
 // If precedence were resolved per *source* — "env wins, so ignore the
 // profile entirely" — that invocation would silently fall back to the
@@ -135,28 +135,28 @@ var ErrNoToken = errors.New("no API token configured")
 // across Darwin and Linux is one line in the docs, one line in a
 // Dockerfile, one volume mount.
 func Dir() (string, error) {
-	if v := os.Getenv("XCLOUD_CONFIG_HOME"); v != "" {
+	if v := os.Getenv("CLOUDCONSOLE_CONFIG_HOME"); v != "" {
 		return v, nil
 	}
 	if runtime.GOOS == "windows" {
 		if v := os.Getenv("APPDATA"); v != "" {
-			return filepath.Join(v, "xcloud"), nil
+			return filepath.Join(v, "cloudconsole"), nil
 		}
 	}
 	if v := os.Getenv("XDG_CONFIG_HOME"); v != "" {
-		return filepath.Join(v, "xcloud"), nil
+		return filepath.Join(v, "cloudconsole"), nil
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", fmt.Errorf("cannot determine home directory: %w", err)
 	}
-	return filepath.Join(home, ".config", "xcloud"), nil
+	return filepath.Join(home, ".config", "cloudconsole"), nil
 }
 
-// Path returns the config file path. XCLOUD_CONFIG overrides it wholesale
+// Path returns the config file path. CLOUDCONSOLE_CONFIG overrides it wholesale
 // so a CI job can point at a throwaway file without touching $HOME.
 func Path() (string, error) {
-	if v := os.Getenv("XCLOUD_CONFIG"); v != "" {
+	if v := os.Getenv("CLOUDCONSOLE_CONFIG"); v != "" {
 		return v, nil
 	}
 	dir, err := Dir()
@@ -197,10 +197,10 @@ func Load() (*File, string, error) {
 // checkPerms refuses a world- or group-readable credential file, in the
 // spirit of ssh(1) rejecting a loose private key. Silently reading a
 // 0644 file containing a bearer token would be the wrong default.
-// XCLOUD_INSECURE_CONFIG=1 exists for the odd container image whose
+// CLOUDCONSOLE_INSECURE_CONFIG=1 exists for the odd container image whose
 // build step cannot preserve modes.
 func checkPerms(path string) error {
-	if os.Getenv("XCLOUD_INSECURE_CONFIG") == "1" || runtime.GOOS == "windows" {
+	if os.Getenv("CLOUDCONSOLE_INSECURE_CONFIG") == "1" || runtime.GOOS == "windows" {
 		return nil
 	}
 	st, err := os.Stat(path)
@@ -212,7 +212,7 @@ func checkPerms(path string) error {
 			"config file %s has permissions %#o, which are too open — "+
 				"it contains an API token that other users can read.\n"+
 				"Fix it with:  chmod 600 %s\n"+
-				"(or set XCLOUD_INSECURE_CONFIG=1 to bypass this check)",
+				"(or set CLOUDCONSOLE_INSECURE_CONFIG=1 to bypass this check)",
 			path, mode, path)
 	}
 	return nil
@@ -270,8 +270,8 @@ func Resolve(f *File, o Overrides) (*Resolved, error) {
 	switch {
 	case o.Profile != "":
 		r.ProfileName, r.ProfileFrom = o.Profile, SourceFlag
-	case os.Getenv("XCLOUD_PROFILE") != "":
-		r.ProfileName, r.ProfileFrom = os.Getenv("XCLOUD_PROFILE"), SourceEnv
+	case os.Getenv("CLOUDCONSOLE_PROFILE") != "":
+		r.ProfileName, r.ProfileFrom = os.Getenv("CLOUDCONSOLE_PROFILE"), SourceEnv
 	case f.CurrentProfile != "":
 		r.ProfileName, r.ProfileFrom = f.CurrentProfile, SourceProfile
 	default:
@@ -291,18 +291,18 @@ func Resolve(f *File, o Overrides) (*Resolved, error) {
 		p = &Profile{}
 	}
 
-	r.APIURL, r.APIURLFrom = pick(o.APIURL, os.Getenv("XCLOUD_API_URL"), p.APIURL, DefaultAPIURL)
+	r.APIURL, r.APIURLFrom = pick(o.APIURL, os.Getenv("CLOUDCONSOLE_API_URL"), p.APIURL, DefaultAPIURL)
 	r.APIURL = normalizeAPIURL(r.APIURL)
 
-	r.Output, r.OutputFrom = pick(o.Output, os.Getenv("XCLOUD_OUTPUT"), p.Output, DefaultOutput)
+	r.Output, r.OutputFrom = pick(o.Output, os.Getenv("CLOUDCONSOLE_OUTPUT"), p.Output, DefaultOutput)
 
 	// The token has a fourth possible source, token_command, which sits
 	// between the profile's literal token and the (nonexistent) default.
 	switch {
 	case o.Token != "":
 		r.Token, r.TokenFrom = o.Token, SourceFlag
-	case os.Getenv("XCLOUD_API_TOKEN") != "":
-		r.Token, r.TokenFrom = os.Getenv("XCLOUD_API_TOKEN"), SourceEnv
+	case os.Getenv("CLOUDCONSOLE_API_TOKEN") != "":
+		r.Token, r.TokenFrom = os.Getenv("CLOUDCONSOLE_API_TOKEN"), SourceEnv
 	case p.Token != "":
 		r.Token, r.TokenFrom = p.Token, SourceProfile
 	case p.TokenCommand != "":

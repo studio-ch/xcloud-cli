@@ -8,8 +8,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/studio-ch/xcloud-cli/internal/api"
-	"github.com/studio-ch/xcloud-cli/internal/output"
+	"github.com/studio-ch/cloudconsole-cli/internal/api"
+	"github.com/studio-ch/cloudconsole-cli/internal/output"
 )
 
 func volumeColumns(now time.Time) []output.Column {
@@ -96,7 +96,7 @@ func newVolumeCreateCommand(s *State) *cobra.Command {
 	c := &cobra.Command{
 		Use:     "create",
 		Short:   "Create a data volume",
-		Example: "  xcloud volume create --name scratch --region ZRH1 --size 500",
+		Example: "  cloudconsole volume create --name scratch --region ZRH1 --size 500",
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			client, err := s.Client()

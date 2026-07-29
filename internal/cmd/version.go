@@ -9,8 +9,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/studio-ch/xcloud-cli/internal/api"
-	"github.com/studio-ch/xcloud-cli/internal/buildinfo"
+	"github.com/studio-ch/cloudconsole-cli/internal/api"
+	"github.com/studio-ch/cloudconsole-cli/internal/buildinfo"
 )
 
 type healthInfo struct {
@@ -27,7 +27,7 @@ func newVersionCommand(s *State) *cobra.Command {
 		Short: "Show the client version, and the version of the API it talks to",
 		Long: "Reports the CLI's own build and, unless --client is given, probes the\n" +
 			"configured API's health endpoint. That endpoint is unauthenticated, so\n" +
-			"this works before 'xcloud auth login'.",
+			"this works before 'cloudconsole auth login'.",
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			out := cmd.OutOrStdout()
@@ -68,7 +68,7 @@ func newVersionCommand(s *State) *cobra.Command {
 }
 
 // fetchHealth probes GET /v1/healthz. It builds its own unauthenticated
-// client: `xcloud version` must work with no credential configured, and
+// client: `cloudconsole version` must work with no credential configured, and
 // the health endpoint is mounted before the auth middleware.
 func fetchHealth(ctx context.Context, origin string, timeout time.Duration) (*healthInfo, error) {
 	c, err := api.New(api.Options{Origin: origin, Timeout: timeout, AllowInsecure: true})

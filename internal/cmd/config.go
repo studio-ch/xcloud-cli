@@ -6,18 +6,18 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/studio-ch/xcloud-cli/internal/config"
+	"github.com/studio-ch/cloudconsole-cli/internal/config"
 )
 
 func newConfigCommand(s *State) *cobra.Command {
 	c := &cobra.Command{
 		Use:   "config",
 		Short: "Manage profiles and settings",
-		Long: "Configuration lives in a YAML file (see 'xcloud config path'), created with\n" +
+		Long: "Configuration lives in a YAML file (see 'cloudconsole config path'), created with\n" +
 			"0600 permissions because it holds an API token.\n\n" +
 			"Every setting is resolved per field, in this order:\n" +
 			"  1. a command-line flag        --api-url, --output, --profile\n" +
-			"  2. an environment variable    XCLOUD_API_URL, XCLOUD_API_TOKEN, XCLOUD_OUTPUT, XCLOUD_PROFILE\n" +
+			"  2. an environment variable    CLOUDCONSOLE_API_URL, CLOUDCONSOLE_API_TOKEN, CLOUDCONSOLE_OUTPUT, CLOUDCONSOLE_PROFILE\n" +
 			"  3. the selected profile\n" +
 			"  4. the built-in default\n\n" +
 			"Per field, not per source — so a token from the environment combines with a\n" +
@@ -46,7 +46,7 @@ func newConfigListCommand(s *State) *cobra.Command {
 			out := cmd.OutOrStdout()
 			if len(file.Profiles) == 0 {
 				fmt.Fprintf(cmd.ErrOrStderr(),
-					"No profiles configured (%s).\nRun 'xcloud auth login' to create one.\n", path)
+					"No profiles configured (%s).\nRun 'cloudconsole auth login' to create one.\n", path)
 				return nil
 			}
 			active, _ := s.Resolved()
@@ -98,7 +98,7 @@ func newConfigUseCommand(s *State) *cobra.Command {
 			}
 			if _, ok := file.Profiles[args[0]]; !ok {
 				return &usageError{fmt.Errorf(
-					"profile %q does not exist — 'xcloud config list' shows the configured ones", args[0])}
+					"profile %q does not exist — 'cloudconsole config list' shows the configured ones", args[0])}
 			}
 			file.CurrentProfile = args[0]
 			if _, err := config.Save(file); err != nil {

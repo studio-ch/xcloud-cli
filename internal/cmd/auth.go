@@ -13,8 +13,8 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 
-	"github.com/studio-ch/xcloud-cli/internal/api"
-	"github.com/studio-ch/xcloud-cli/internal/config"
+	"github.com/studio-ch/cloudconsole-cli/internal/api"
+	"github.com/studio-ch/cloudconsole-cli/internal/config"
 )
 
 // tenantInfo is the subset of GET /v1/tenant the CLI renders.
@@ -70,7 +70,7 @@ func newAuthLoginCommand(s *State) *cobra.Command {
 		Long: "Prompts for an API key, verifies it against the API, and stores it in the\n" +
 			"profile's configuration file with 0600 permissions.\n\n" +
 			"For scripts, pipe the key in instead:\n" +
-			"  op read op://Private/cloud/api-key | xcloud auth login --token-stdin\n\n" +
+			"  op read op://Private/cloud/api-key | cloudconsole auth login --token-stdin\n\n" +
 			"To avoid storing the secret at all, set 'token_command' in the profile and\n" +
 			"the CLI will shell out for it on each invocation.",
 		Args: cobra.NoArgs,
@@ -97,7 +97,7 @@ func newAuthLoginCommand(s *State) *cobra.Command {
 			// a poor trade for one round-trip.
 			probe, err := api.New(api.Options{
 				Origin: r.APIURL, Token: token, Timeout: s.timeout,
-				AllowInsecure: os.Getenv("XCLOUD_ALLOW_INSECURE") == "1",
+				AllowInsecure: os.Getenv("CLOUDCONSOLE_ALLOW_INSECURE") == "1",
 			})
 			if err != nil {
 				return &configError{err}
@@ -123,7 +123,7 @@ func newAuthLoginCommand(s *State) *cobra.Command {
 				existing.TenantID != "" && existing.TenantID != tenant.ID {
 				return &usageError{fmt.Errorf(
 					"profile %q is already bound to organisation %q (%s), but this key belongs to %q (%s).\n"+
-						"Use a different profile:  xcloud auth login --profile <name>",
+						"Use a different profile:  cloudconsole auth login --profile <name>",
 					name, existing.TenantHint, existing.TenantID, tenant.Name, tenant.ID)}
 			}
 
@@ -262,7 +262,7 @@ func newAuthStatusCommand(s *State) *cobra.Command {
 				fmt.Fprintln(out, "Credential none configured")
 				fmt.Fprintln(out, "Status     not signed in")
 				return &configError{fmt.Errorf(
-					"no API token for profile %q — run 'xcloud auth login' or set XCLOUD_API_TOKEN", r.ProfileName)}
+					"no API token for profile %q — run 'cloudconsole auth login' or set CLOUDCONSOLE_API_TOKEN", r.ProfileName)}
 			}
 			fmt.Fprintf(out, "Credential %s   [%s]\n", maskToken(r.Token), r.TokenFrom)
 

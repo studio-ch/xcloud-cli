@@ -8,9 +8,9 @@ import (
 	"io"
 	"strings"
 
-	"github.com/studio-ch/xcloud-cli/internal/api"
-	"github.com/studio-ch/xcloud-cli/internal/exitcode"
-	"github.com/studio-ch/xcloud-cli/internal/output"
+	"github.com/studio-ch/cloudconsole-cli/internal/api"
+	"github.com/studio-ch/cloudconsole-cli/internal/exitcode"
+	"github.com/studio-ch/cloudconsole-cli/internal/output"
 )
 
 // configError is a local configuration or credential problem — nothing
@@ -72,7 +72,7 @@ func report(w io.Writer, err error, s *State) exitcode.Code {
 		if transport.IsTimeout() {
 			fmt.Fprintln(w, "Hint: the request timed out. Raise it with --timeout 60s, or check whether a proxy is in the way.")
 		} else {
-			fmt.Fprintln(w, "Hint: check network connectivity and any HTTPS_PROXY setting. 'xcloud version' probes the API's health endpoint.")
+			fmt.Fprintln(w, "Hint: check network connectivity and any HTTPS_PROXY setting. 'cloudconsole version' probes the API's health endpoint.")
 		}
 		return exitcode.Network
 	}
@@ -92,7 +92,7 @@ func report(w io.Writer, err error, s *State) exitcode.Code {
 	var waitErr *waitTimeoutError
 	if errors.As(err, &waitErr) {
 		fmt.Fprintf(w, "Error: %s\n", waitErr.Error())
-		fmt.Fprintln(w, "Hint: the operation was accepted and may still be running. Check with 'xcloud instance get', or raise --wait-timeout.")
+		fmt.Fprintln(w, "Hint: the operation was accepted and may still be running. Check with 'cloudconsole instance get', or raise --wait-timeout.")
 		return exitcode.WaitTimeout
 	}
 
@@ -174,15 +174,15 @@ func describe(p *api.Problem) (headline, hint string) {
 	switch {
 	case p.IsExpiredKey():
 		return "Your API key has expired.",
-			"Issue a new key in the panel under Settings → API keys, then run 'xcloud auth login'."
+			"Issue a new key in the panel under Settings → API keys, then run 'cloudconsole auth login'."
 
 	case p.Status == 401:
 		return "Authentication failed — the API rejected this key.",
-			"Run 'xcloud auth login' with a key from Settings → API keys. Keys are shown only once, at creation."
+			"Run 'cloudconsole auth login' with a key from Settings → API keys. Keys are shown only once, at creation."
 
 	case p.IsReadOnlyKey():
 		return "This API key is read-only.",
-			"Create a key with the Read+Write preset. 'xcloud auth status' shows the scopes of the key in use."
+			"Create a key with the Read+Write preset. 'cloudconsole auth status' shows the scopes of the key in use."
 
 	case p.Code == "service_disabled":
 		service := p.Service
@@ -194,7 +194,7 @@ func describe(p *api.Problem) (headline, hint string) {
 
 	case p.Status == 403:
 		return "Permission denied.",
-			"'xcloud auth status' shows which key and organisation this command used."
+			"'cloudconsole auth status' shows which key and organisation this command used."
 
 	case p.Code == "upstream_missing":
 		return "The upstream resource no longer exists; this record is stale.",
@@ -202,7 +202,7 @@ func describe(p *api.Problem) (headline, hint string) {
 
 	case p.Status == 404 || p.Status == 410:
 		return "Not found.",
-			"An API key is bound to one organisation, and a resource in another one reads as 'not found' rather than 'forbidden'. Check 'xcloud auth whoami'."
+			"An API key is bound to one organisation, and a resource in another one reads as 'not found' rather than 'forbidden'. Check 'cloudconsole auth whoami'."
 
 	case p.IsIdempotencyConflict():
 		return "That idempotency key was already used with a different request body.",
@@ -218,7 +218,7 @@ func describe(p *api.Problem) (headline, hint string) {
 	case p.Quota != nil:
 		return fmt.Sprintf("Quota exceeded: %s — using %d of %d, this request needs %d more.",
 				p.Quota.Key, p.Quota.Usage, p.Quota.Limit, p.Quota.Requested),
-			"Delete unused resources, or ask support to raise the limit. 'xcloud quota list' shows all quotas."
+			"Delete unused resources, or ask support to raise the limit. 'cloudconsole quota list' shows all quotas."
 
 	case p.Status == 412:
 		return "Precondition failed.", ""

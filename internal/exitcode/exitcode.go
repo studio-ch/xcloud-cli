@@ -80,7 +80,7 @@ const (
 func (c Code) Int() int { return int(c) }
 
 // Description returns the one-line meaning, used by
-// `xcloud help exit-codes` so the contract is discoverable from the
+// `cloudconsole help exit-codes` so the contract is discoverable from the
 // binary itself and not only from the docs.
 func (c Code) Description() string {
 	switch c {
@@ -117,7 +117,7 @@ func (c Code) Description() string {
 	}
 }
 
-// All is every code in ascending order. `xcloud help exit-codes` renders
+// All is every code in ascending order. `cloudconsole help exit-codes` renders
 // it, and the test suite iterates it to guarantee every code has both a
 // description and a covering case.
 var All = []Code{

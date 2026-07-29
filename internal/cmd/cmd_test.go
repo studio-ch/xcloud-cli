@@ -12,7 +12,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/studio-ch/xcloud-cli/internal/exitcode"
+	"github.com/studio-ch/cloudconsole-cli/internal/exitcode"
 )
 
 // See the note on testToken in internal/api/client_test.go: split so a
@@ -28,7 +28,7 @@ type route struct {
 // harness runs commands end-to-end against a fake API.
 //
 // It drives the real root command through the real configuration
-// resolution — pointing XCLOUD_API_URL at the test server rather than
+// resolution — pointing CLOUDCONSOLE_API_URL at the test server rather than
 // injecting a client — so a break anywhere in the chain (flag parsing,
 // precedence, transport, rendering, exit mapping) shows up here.
 type harness struct {
@@ -102,12 +102,12 @@ func (h *harness) run(t *testing.T, argv ...string) (stdout, stderr string, code
 func (h *harness) runWithConfirm(t *testing.T, confirm func(string) (bool, error), argv ...string) (stdout, stderr string, code exitcode.Code) {
 	t.Helper()
 
-	t.Setenv("XCLOUD_CONFIG", filepath.Join(t.TempDir(), "config.yaml"))
-	t.Setenv("XCLOUD_API_URL", h.URL)
-	t.Setenv("XCLOUD_API_TOKEN", fakeToken)
-	t.Setenv("XCLOUD_ALLOW_INSECURE", "1") // the test server is plain http
-	t.Setenv("XCLOUD_PROFILE", "")
-	t.Setenv("XCLOUD_OUTPUT", "")
+	t.Setenv("CLOUDCONSOLE_CONFIG", filepath.Join(t.TempDir(), "config.yaml"))
+	t.Setenv("CLOUDCONSOLE_API_URL", h.URL)
+	t.Setenv("CLOUDCONSOLE_API_TOKEN", fakeToken)
+	t.Setenv("CLOUDCONSOLE_ALLOW_INSECURE", "1") // the test server is plain http
+	t.Setenv("CLOUDCONSOLE_PROFILE", "")
+	t.Setenv("CLOUDCONSOLE_OUTPUT", "")
 	t.Setenv("NO_COLOR", "1")
 
 	var out, errBuf bytes.Buffer
@@ -389,10 +389,10 @@ func TestWaitPollsUntilSettled(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	t.Setenv("XCLOUD_CONFIG", filepath.Join(t.TempDir(), "config.yaml"))
-	t.Setenv("XCLOUD_API_URL", srv.URL)
-	t.Setenv("XCLOUD_API_TOKEN", fakeToken)
-	t.Setenv("XCLOUD_ALLOW_INSECURE", "1")
+	t.Setenv("CLOUDCONSOLE_CONFIG", filepath.Join(t.TempDir(), "config.yaml"))
+	t.Setenv("CLOUDCONSOLE_API_URL", srv.URL)
+	t.Setenv("CLOUDCONSOLE_API_TOKEN", fakeToken)
+	t.Setenv("CLOUDCONSOLE_ALLOW_INSECURE", "1")
 	t.Setenv("NO_COLOR", "1")
 
 	var out, errBuf bytes.Buffer

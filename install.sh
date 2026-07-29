@@ -1,7 +1,7 @@
 #!/bin/sh
-# Installer for the xcloud CLI.
+# Installer for the cloudconsole CLI.
 #
-#   curl -fsSL https://raw.githubusercontent.com/studio-ch/xcloud-cli/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/studio-ch/cloudconsole-cli/main/install.sh | sh
 #
 # POSIX sh on purpose: this runs inside minimal CI images that have no
 # bash. Verifies the download against SHA256SUMS and refuses to continue
@@ -9,14 +9,14 @@
 # install. Never invokes sudo on its own.
 #
 # Environment:
-#   XCLOUD_VERSION      install a specific tag, e.g. v0.1.0 (default: latest)
-#   XCLOUD_INSTALL_DIR  where to put the binary (default: /usr/local/bin,
+#   CLOUDCONSOLE_VERSION      install a specific tag, e.g. v0.1.0 (default: latest)
+#   CLOUDCONSOLE_INSTALL_DIR  where to put the binary (default: /usr/local/bin,
 #                       falling back to $HOME/.local/bin if not writable)
 
 set -eu
 
-REPO="studio-ch/xcloud-cli"
-BINARY="xcloud"
+REPO="studio-ch/cloudconsole-cli"
+BINARY="cloudconsole"
 
 log()  { printf '%s\n' "$*" >&2; }
 die()  { printf 'error: %s\n' "$*" >&2; exit 1; }
@@ -72,8 +72,8 @@ esac
 # GitHub API: the API is aggressively rate-limited for unauthenticated
 # callers, which is exactly what a shared CI runner is, and the redirect
 # needs no token and no file to keep in sync.
-if [ -n "${XCLOUD_VERSION:-}" ]; then
-    version="$XCLOUD_VERSION"
+if [ -n "${CLOUDCONSOLE_VERSION:-}" ]; then
+    version="$CLOUDCONSOLE_VERSION"
     case "$version" in v*) ;; *) version="v$version" ;; esac
     tag="cli/$version"
 else
@@ -83,7 +83,7 @@ else
     tag=${final##*/releases/tag/}
     case "$tag" in
         cli/v*) ;;
-        *) die "could not determine the latest version (got '$final'). Set XCLOUD_VERSION explicitly." ;;
+        *) die "could not determine the latest version (got '$final'). Set CLOUDCONSOLE_VERSION explicitly." ;;
     esac
     version=${tag#cli/}
 fi
@@ -127,15 +127,15 @@ chmod +x "$tmp/$BINARY"
 
 # --- install --------------------------------------------------------------
 
-dir="${XCLOUD_INSTALL_DIR:-/usr/local/bin}"
+dir="${CLOUDCONSOLE_INSTALL_DIR:-/usr/local/bin}"
 if [ ! -d "$dir" ] || [ ! -w "$dir" ]; then
     fallback="$HOME/.local/bin"
-    if [ -z "${XCLOUD_INSTALL_DIR:-}" ]; then
+    if [ -z "${CLOUDCONSOLE_INSTALL_DIR:-}" ]; then
         log "$dir is not writable; installing to $fallback instead."
         mkdir -p "$fallback"
         dir="$fallback"
     else
-        die "$dir is not writable. Create it, or set XCLOUD_INSTALL_DIR to somewhere you can write."
+        die "$dir is not writable. Create it, or set CLOUDCONSOLE_INSTALL_DIR to somewhere you can write."
     fi
 fi
 

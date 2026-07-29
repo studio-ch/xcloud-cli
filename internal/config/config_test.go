@@ -10,15 +10,15 @@ import (
 
 // isolate points the config machinery at a throwaway file and clears
 // every environment variable that participates in resolution, so a
-// developer's real ~/.config/xcloud/config.yaml can never influence a
+// developer's real ~/.config/cloudconsole/config.yaml can never influence a
 // test run (nor be written to by one).
 func isolate(t *testing.T) string {
 	t.Helper()
 	path := filepath.Join(t.TempDir(), "config.yaml")
-	t.Setenv("XCLOUD_CONFIG", path)
+	t.Setenv("CLOUDCONSOLE_CONFIG", path)
 	for _, k := range []string{
-		"XCLOUD_PROFILE", "XCLOUD_API_URL", "XCLOUD_API_TOKEN",
-		"XCLOUD_OUTPUT", "XCLOUD_CONFIG_HOME", "XCLOUD_INSECURE_CONFIG",
+		"CLOUDCONSOLE_PROFILE", "CLOUDCONSOLE_API_URL", "CLOUDCONSOLE_API_TOKEN",
+		"CLOUDCONSOLE_OUTPUT", "CLOUDCONSOLE_CONFIG_HOME", "CLOUDCONSOLE_INSECURE_CONFIG",
 	} {
 		t.Setenv(k, "")
 	}
@@ -57,7 +57,7 @@ func TestResolvePrecedencePerField(t *testing.T) {
 			// store must combine with the *profile's* URL, not drag the
 			// default production URL in with it.
 			name:       "env token keeps profile url",
-			env:        map[string]string{"XCLOUD_API_TOKEN": "sk_live_envtoken000"},
+			env:        map[string]string{"CLOUDCONSOLE_API_TOKEN": "sk_live_envtoken000"},
 			overrides:  Overrides{Profile: "stage"},
 			wantURL:    "https://stage.example",
 			wantToken:  "sk_live_envtoken000",
@@ -67,7 +67,7 @@ func TestResolvePrecedencePerField(t *testing.T) {
 		},
 		{
 			name:       "flag beats env beats profile",
-			env:        map[string]string{"XCLOUD_API_URL": "https://env.example"},
+			env:        map[string]string{"CLOUDCONSOLE_API_URL": "https://env.example"},
 			overrides:  Overrides{APIURL: "https://flag.example"},
 			wantURL:    "https://flag.example",
 			wantToken:  "sk_live_prodtoken00",
@@ -77,7 +77,7 @@ func TestResolvePrecedencePerField(t *testing.T) {
 		},
 		{
 			name:       "env beats profile",
-			env:        map[string]string{"XCLOUD_API_URL": "https://env.example"},
+			env:        map[string]string{"CLOUDCONSOLE_API_URL": "https://env.example"},
 			wantURL:    "https://env.example",
 			wantToken:  "sk_live_prodtoken00",
 			wantOutput: "table",
@@ -86,7 +86,7 @@ func TestResolvePrecedencePerField(t *testing.T) {
 		},
 		{
 			name:       "env profile selection",
-			env:        map[string]string{"XCLOUD_PROFILE": "stage"},
+			env:        map[string]string{"CLOUDCONSOLE_PROFILE": "stage"},
 			wantURL:    "https://stage.example",
 			wantToken:  "sk_live_stagetoken0",
 			wantOutput: "json",
@@ -153,9 +153,9 @@ func TestResolveUnknownExplicitProfileErrors(t *testing.T) {
 		t.Error("expected an error for an unknown --profile, got nil")
 	}
 
-	t.Setenv("XCLOUD_PROFILE", "typo")
+	t.Setenv("CLOUDCONSOLE_PROFILE", "typo")
 	if _, err := Resolve(f, Overrides{}); err == nil {
-		t.Error("expected an error for an unknown XCLOUD_PROFILE, got nil")
+		t.Error("expected an error for an unknown CLOUDCONSOLE_PROFILE, got nil")
 	}
 }
 
@@ -229,9 +229,9 @@ func TestLoadRefusesOverPermissiveFile(t *testing.T) {
 		t.Errorf("error should tell the user how to fix it, got: %v", err)
 	}
 
-	t.Setenv("XCLOUD_INSECURE_CONFIG", "1")
+	t.Setenv("CLOUDCONSOLE_INSECURE_CONFIG", "1")
 	if _, _, err := Load(); err != nil {
-		t.Errorf("XCLOUD_INSECURE_CONFIG=1 should bypass the check, got: %v", err)
+		t.Errorf("CLOUDCONSOLE_INSECURE_CONFIG=1 should bypass the check, got: %v", err)
 	}
 }
 
@@ -321,7 +321,7 @@ func TestLiteralTokenBeatsTokenCommand(t *testing.T) {
 }
 
 func TestDirHonoursXDG(t *testing.T) {
-	t.Setenv("XCLOUD_CONFIG_HOME", "")
+	t.Setenv("CLOUDCONSOLE_CONFIG_HOME", "")
 	t.Setenv("XDG_CONFIG_HOME", "/tmp/xdg")
 	if runtime.GOOS == "windows" {
 		t.Skip("windows uses APPDATA")
@@ -330,7 +330,7 @@ func TestDirHonoursXDG(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if want := filepath.Join("/tmp/xdg", "xcloud"); got != want {
+	if want := filepath.Join("/tmp/xdg", "cloudconsole"); got != want {
 		t.Errorf("Dir() = %q, want %q", got, want)
 	}
 }

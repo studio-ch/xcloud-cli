@@ -29,7 +29,7 @@ func (w *Writer) renderTable(body []byte, columns []Column) error {
 	}
 
 	// Quiet mode is the scripting idiom: one identifying value per line,
-	// so `for id in $(xcloud instance list -q)` works.
+	// so `for id in $(cloudconsole instance list -q)` works.
 	if w.Quiet {
 		for _, r := range rows {
 			fmt.Fprintln(w.Out, identifier(r))

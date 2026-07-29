@@ -1,4 +1,4 @@
-// Command xcloud is the Cloud Console command-line interface.
+// Command cloudconsole is the Cloud Console command-line interface.
 //
 // main stays deliberately thin: signal handling and a single os.Exit
 // call. Every exit code the process can produce comes from
@@ -12,7 +12,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/studio-ch/xcloud-cli/internal/cmd"
+	"github.com/studio-ch/cloudconsole-cli/internal/cmd"
 )
 
 func main() {
