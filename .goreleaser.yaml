@@ -141,7 +141,7 @@ brews:
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
     directory: Formula
-    homepage: https://cloud.flow.swiss
+    homepage: https://github.com/studio-ch/cloudconsole-cli
     description: Command-line interface for the Cloud Console
     install: |
       bin.install "cloudconsole"

@@ -1,8 +1,8 @@
 # cloudconsole
 
-Command-line interface for the [Cloud Console](https://cloud.flow.swiss).
-A single static binary for managing Xcloud instances, data volumes, images,
-networks, security groups and elastic IPs — from a terminal or from CI.
+Command-line interface for the Cloud Console. A single static binary for
+managing Xcloud instances, data volumes, images, networks, security groups
+and elastic IPs — from a terminal or from CI.
 
 > This repository is a **read-only mirror**, published from the Cloud
 > Console monorepo on every release. Issues and feature requests are
@@ -153,6 +153,10 @@ Settings resolve **per field**: flag, then environment
 then the profile, then the default. So a token from the environment
 combines with a URL from the profile — the usual CI arrangement.
 `cloudconsole config explain` shows what was resolved and from where.
+
+The default endpoint is `https://api.cloud.flow.swiss`. Point the CLI at a
+different deployment with `--api-url`, `CLOUDCONSOLE_API_URL`, or an
+`api_url` in the profile — one profile per environment is the usual shape.
 
 To keep the secret out of the file, use a command instead:
 
