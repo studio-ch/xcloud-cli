@@ -23,13 +23,14 @@ version: 2
 
 project_name: cloudconsole
 
-# Released by its own tag prefix, from .github/workflows/release-cli.yml.
-# A plain vX.Y.Z tag drives the platform release, which builds every Docker
-# image and rolls out stage — a CLI fix must not trigger that, and a
-# platform release must not bump the CLI's version for no reason.
-monorepo:
-  tag_prefix: cli/
-  dir: apps/cloudconsole-cli
+# NOTE: there is deliberately no `monorepo:` block — that is a GoReleaser
+# Pro feature and the OSS distribution rejects the config outright.
+#
+# The monorepo tag prefix is handled in the workflow instead: the tag
+# `cli/vX.Y.Z` is translated into GORELEASER_CURRENT_TAG=vX.Y.Z before
+# GoReleaser runs, so it sees an ordinary semver tag. That also gives the
+# public repository a plain `vX.Y.Z` release, which is what Go's module
+# proxy needs for `go install ...@latest`.
 
 env:
   - CGO_ENABLED=0
@@ -96,23 +97,20 @@ checksum:
 snapshot:
   version_template: "{{ incpatch .Version }}-dev"
 
+# Disabled: the commit history lives in the private monorepo and covers
+# far more than this module, so an auto-generated changelog here would be
+# both noisy and full of links nobody outside can open.
 changelog:
-  use: github
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
-      - "^chore:"
+  disable: true
 
 # Publish to the public releases repository. studio-cp itself is private,
 # so assets released here would need authentication to download — which
 # brew, install.sh and a plain curl cannot provide.
 #
-# REQUIRES: the repo below must exist and RELEASES_REPO_TOKEN must be a PAT
-# with contents:write on it. Until both are in place, the release workflow
-# will fail at this step (deliberately — a half-published release is worse
-# than none).
+# REQUIRES: RELEASE_TOKEN, a PAT with contents:write on BOTH public repos
+# (this one and studio-ch/homebrew-tap). Until it is set the release
+# workflow fails here, deliberately — a half-published release is worse
+# than none.
 release:
   github:
     owner: studio-ch
@@ -133,24 +131,38 @@ release:
     Verify a download against `SHA256SUMS`. See `cloudconsole exit-codes` for the
     scripting contract.
 
-brews:
+# `brews:` is deprecated — Homebrew wants casks for pre-built binaries and
+# reserves formulae for things it builds from source.
+homebrew_casks:
   - name: cloudconsole
     ids: [cloudconsole]
     repository:
       owner: studio-ch
       name: homebrew-tap
-      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-    directory: Formula
+      token: "{{ .Env.RELEASE_TOKEN }}"
+    directory: Casks
     homepage: https://github.com/studio-ch/cloudconsole-cli
     description: Command-line interface for the Cloud Console
-    install: |
-      bin.install "cloudconsole"
-      bash_completion.install "completions/cloudconsole.bash" => "xcloud"
-      zsh_completion.install "completions/cloudconsole.zsh" => "_cloudconsole"
-      fish_completion.install "completions/cloudconsole.fish"
-    test: |
-      system "#{bin}/cloudconsole", "version", "--client"
+    binaries:
+      - cloudconsole
+    completions:
+      bash: completions/cloudconsole.bash
+      zsh: completions/cloudconsole.zsh
+      fish: completions/cloudconsole.fish
+    hooks:
+      post:
+        # The binaries are cross-compiled on Linux and therefore neither
+        # signed nor notarised. Homebrew marks anything it downloads with
+        # the quarantine attribute, and Gatekeeper then refuses to run an
+        # unsigned binary outright — so strip it, or `cloudconsole` is
+        # killed on first launch with a message that does not explain why.
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr",
+                           args: ["-dr", "com.apple.quarantine", "#{staged_path}/cloudconsole"],
+                           sudo: false
+          end
     caveats: |
-      Authenticate with an API key from the panel (Settings → API keys):
+      Authenticate with an API key from the panel (Settings -> API keys):
 
         cloudconsole auth login

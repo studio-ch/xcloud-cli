@@ -65,8 +65,9 @@ esac
 
 # --- version --------------------------------------------------------------
 
-# Releases carry the monorepo's `cli/vX.Y.Z` tag, so a full tag looks like
-# "cli/v0.1.0" while the archives are named with the bare "0.1.0".
+# Releases in this repository carry a plain `vX.Y.Z` tag (the monorepo's
+# `cli/` prefix is stripped when publishing), while the archives are named
+# with the bare "0.1.0".
 #
 # The latest tag comes from the /releases/latest redirect rather than the
 # GitHub API: the API is aggressively rate-limited for unauthenticated
@@ -75,7 +76,7 @@ esac
 if [ -n "${CLOUDCONSOLE_VERSION:-}" ]; then
     version="$CLOUDCONSOLE_VERSION"
     case "$version" in v*) ;; *) version="v$version" ;; esac
-    tag="cli/$version"
+    tag="$version"
 else
     final=$(resolve_redirect "https://github.com/$REPO/releases/latest") \
         || die "could not reach GitHub to determine the latest version."
