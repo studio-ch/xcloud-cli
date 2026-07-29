@@ -1,0 +1,14 @@
+# oapi-codegen config for the Cloud Console customer API.
+#
+# `client` + `models` only: we want the typed request/response structs and
+# a thin ClientWithResponses whose RequestEditorFn hook is where auth,
+# Idempotency-Key, User-Agent and the request id get injected
+# (internal/api/client.go). No server, no spec embedding — the spec
+# snapshot is already committed next to this file.
+package: gen
+output: internal/api/gen/client.gen.go
+generate:
+  models: true
+  client: true
+output-options:
+  skip-prune: true

@@ -4,9 +4,10 @@ Command-line interface for the [Cloud Console](https://cloud.flow.swiss).
 A single static binary for managing Xcloud instances, data volumes, images,
 networks, security groups and elastic IPs — from a terminal or from CI.
 
-> This repository is the **release channel and installer**. The source
-> lives in the Cloud Console monorepo; issues and feature requests are
-> welcome here.
+> This repository is a **read-only mirror**, published from the Cloud
+> Console monorepo on every release. Issues and feature requests are
+> welcome here; pull requests are not, since changes here are overwritten
+> by the next mirror — see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Install
 
@@ -27,6 +28,12 @@ Pin a version, or choose where it lands:
 ```bash
 XCLOUD_VERSION=v0.1.0 XCLOUD_INSTALL_DIR="$HOME/.local/bin" \
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/studio-ch/xcloud-cli/main/install.sh)"
+```
+
+**Go**
+
+```bash
+go install github.com/studio-ch/xcloud-cli/cmd/xcloud@latest
 ```
 
 **Manual** — download an archive from
