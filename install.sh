@@ -80,13 +80,13 @@ if [ -n "${CLOUDCONSOLE_VERSION:-}" ]; then
 else
     final=$(resolve_redirect "https://github.com/$REPO/releases/latest") \
         || die "could not reach GitHub to determine the latest version."
-    # .../releases/tag/cli/v0.1.0  ->  cli/v0.1.0
+    # .../releases/tag/v0.1.0  ->  v0.1.0
     tag=${final##*/releases/tag/}
     case "$tag" in
-        cli/v*) ;;
+        v*) ;;
         *) die "could not determine the latest version (got '$final'). Set CLOUDCONSOLE_VERSION explicitly." ;;
     esac
-    version=${tag#cli/}
+    version="$tag"
 fi
 
 bare="${version#v}"
